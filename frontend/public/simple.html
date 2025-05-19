@@ -153,7 +153,9 @@
       const statusBtn = document.getElementById('status-btn');
 
       // Variables
-      const apiUrl = 'http://localhost:8080/api';
+      const apiUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+        ? 'http://localhost:8080/api'
+        : 'https://api.registration-app.yourdomain.com/api';
       let userId = null;
       let accessToken = null;
       let snsWebSdkInstance = null;
