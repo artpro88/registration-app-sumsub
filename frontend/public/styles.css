@@ -1,0 +1,173 @@
+/* Main styles */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f8f9fa;
+  color: #333;
+  line-height: 1.6;
+}
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.card {
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+  border: none;
+}
+
+.card-header {
+  background-color: #4e73df;
+  color: white;
+  border-radius: 10px 10px 0 0 !important;
+  padding: 15px 20px;
+}
+
+.card-body {
+  padding: 30px;
+}
+
+/* Form styles */
+.form-label {
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.form-control {
+  border-radius: 5px;
+  padding: 10px 15px;
+  border: 1px solid #ced4da;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.form-control:focus {
+  border-color: #4e73df;
+  box-shadow: 0 0 0 0.25rem rgba(78, 115, 223, 0.25);
+}
+
+.error-message {
+  color: #dc3545;
+  font-size: 0.875rem;
+  margin-top: 5px;
+}
+
+/* Button styles */
+.btn-primary {
+  background-color: #4e73df;
+  border-color: #4e73df;
+  padding: 10px 20px;
+  font-weight: 600;
+  border-radius: 5px;
+}
+
+.btn-primary:hover {
+  background-color: #2e59d9;
+  border-color: #2653d4;
+}
+
+/* Verification status styles */
+.status-container {
+  text-align: center;
+  padding: 30px;
+}
+
+.status-icon {
+  font-size: 48px;
+  margin-bottom: 20px;
+}
+
+.status-verified {
+  color: #1cc88a;
+}
+
+.status-pending {
+  color: #f6c23e;
+}
+
+.status-rejected {
+  color: #e74a3b;
+}
+
+/* Sumsub container styles */
+#sumsub-websdk-container {
+  width: 100%;
+  min-height: 600px;
+  margin: 20px 0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .card-body {
+    padding: 20px;
+  }
+  
+  .container {
+    padding: 10px;
+  }
+}
+
+/* Progress indicator */
+.step-indicator {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 30px;
+}
+
+.step {
+  flex: 1;
+  text-align: center;
+  position: relative;
+}
+
+.step:not(:last-child):after {
+  content: '';
+  position: absolute;
+  top: 15px;
+  left: 50%;
+  width: 100%;
+  height: 2px;
+  background-color: #e9ecef;
+  z-index: 1;
+}
+
+.step-number {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background-color: #e9ecef;
+  color: #6c757d;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 10px;
+  position: relative;
+  z-index: 2;
+}
+
+.step.active .step-number {
+  background-color: #4e73df;
+  color: white;
+}
+
+.step.completed .step-number {
+  background-color: #1cc88a;
+  color: white;
+}
+
+.step-title {
+  font-size: 0.875rem;
+  color: #6c757d;
+}
+
+.step.active .step-title {
+  color: #4e73df;
+  font-weight: 600;
+}
+
+.step.completed .step-title {
+  color: #1cc88a;
+  font-weight: 600;
+}

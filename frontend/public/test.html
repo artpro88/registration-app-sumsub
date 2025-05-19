@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>API Test</title>
+</head>
+<body>
+  <h1>API Test</h1>
+  
+  <button id="test-button">Test API</button>
+  
+  <pre id="result"></pre>
+  
+  <script>
+    document.getElementById('test-button').addEventListener('click', async () => {
+      const resultElement = document.getElementById('result');
+      resultElement.textContent = 'Sending request...';
+      
+      try {
+        const response = await fetch('http://localhost:8080/api/users/register', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            firstName: 'Test',
+            lastName: 'User',
+            dob: '1990-01-01',
+            phoneNumber: '+1234567890',
+            email: 'test@example.com',
+            street: '123 Test St',
+            city: 'Test City',
+            postcode: '12345'
+          })
+        });
+        
+        const data = await response.json();
+        resultElement.textContent = JSON.stringify(data, null, 2);
+      } catch (error) {
+        resultElement.textContent = `Error: ${error.message}`;
+      }
+    });
+  </script>
+</body>
+</html>

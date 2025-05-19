@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Simple Registration</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #f8f9fa;
+      padding: 20px;
+    }
+    .card {
+      border-radius: 10px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    }
+    .card-header {
+      background-color: #4e73df;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-md-8">
+        <div class="card">
+          <div class="card-header">
+            <h2 class="text-center mb-0">Simple Registration</h2>
+          </div>
+          <div class="card-body">
+            <!-- Registration Form -->
+            <form id="registration-form">
+              <div class="row mb-3">
+                <div class="col-md-6 mb-3">
+                  <label for="firstName" class="form-label">First Name</label>
+                  <input type="text" class="form-control" id="firstName" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label for="lastName" class="form-label">Last Name</label>
+                  <input type="text" class="form-control" id="lastName" required>
+                </div>
+              </div>
+
+              <div class="row mb-3">
+                <div class="col-md-6 mb-3">
+                  <label for="dob" class="form-label">Date of Birth</label>
+                  <input type="date" class="form-control" id="dob" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label for="phoneNumber" class="form-label">Phone Number</label>
+                  <input type="tel" class="form-control" id="phoneNumber" required>
+                </div>
+              </div>
+
+              <div class="mb-3">
+                <label for="email" class="form-label">Email</label>
+                <input type="email" class="form-control" id="email" required>
+              </div>
+
+              <div class="mb-3">
+                <label for="street" class="form-label">Street</label>
+                <input type="text" class="form-control" id="street" required>
+              </div>
+
+              <div class="row mb-3">
+                <div class="col-md-6 mb-3">
+                  <label for="city" class="form-label">City</label>
+                  <input type="text" class="form-control" id="city" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label for="postcode" class="form-label">Postcode</label>
+                  <input type="text" class="form-control" id="postcode" required>
+                </div>
+              </div>
+
+              <div class="d-grid">
+                <button type="submit" class="btn btn-primary" id="submit-btn">Register</button>
+              </div>
+            </form>
+
+            <!-- Result -->
+            <div id="result" class="mt-4" style="display: none;">
+              <div class="alert alert-success">
+                <h4 class="alert-heading">Registration Successful!</h4>
+                <p>Your registration has been completed successfully.</p>
+                <hr>
+                <p class="mb-0">User ID: <span id="user-id"></span></p>
+              </div>
+
+              <div class="d-grid mt-4">
+                <button class="btn btn-success" id="verify-btn">Continue to Verification</button>
+              </div>
+            </div>
+
+            <!-- Verification Container -->
+            <div id="verification-container" class="mt-4" style="display: none;">
+              <div class="alert alert-info mb-4">
+                <h4 class="alert-heading">Identity Verification</h4>
+                <p>Please complete the identity verification process below. You'll need to:</p>
+                <ul>
+                  <li>Upload a valid government-issued ID document</li>
+                  <li>Take a selfie or complete a liveness check</li>
+                  <li>Follow any additional instructions provided</li>
+                </ul>
+                <p class="mb-0">This process helps us verify your identity and comply with regulations.</p>
+              </div>
+
+              <div id="sumsub-websdk-container" style="min-height: 500px;"></div>
+
+              <div class="text-center mt-4">
+                <p class="text-muted small">
+                  Your data is securely processed in accordance with our privacy policy and applicable regulations.
+                </p>
+              </div>
+            </div>
+
+            <!-- Status Container -->
+            <div id="status-container" class="mt-4 text-center" style="display: none;">
+              <div id="status-icon" class="mb-4" style="font-size: 4rem;">⏳</div>
+              <h3 id="status-title" class="mb-3">Verification in Progress</h3>
+              <p id="status-message" class="mb-4">Your identity verification is being processed. This may take a few minutes.</p>
+              <div class="d-grid">
+                <button id="status-btn" class="btn btn-primary">Check Status</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Sumsub WebSDK -->
+  <script src="https://static.sumsub.com/idensic/static/sns-websdk-builder.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // DOM elements
+      const form = document.getElementById('registration-form');
+      const submitBtn = document.getElementById('submit-btn');
+      const result = document.getElementById('result');
+      const userIdSpan = document.getElementById('user-id');
+      const verifyBtn = document.getElementById('verify-btn');
+      const verificationContainer = document.getElementById('verification-container');
+      const statusContainer = document.getElementById('status-container');
+      const statusIcon = document.getElementById('status-icon');
+      const statusTitle = document.getElementById('status-title');
+      const statusMessage = document.getElementById('status-message');
+      const statusBtn = document.getElementById('status-btn');
+
+      // Variables
+      const apiUrl = 'http://localhost:8080/api';
+      let userId = null;
+      let accessToken = null;
+      let snsWebSdkInstance = null;
+      let userData = null;
+
+      // Form submission
+      form.addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        // Show loading state
+        submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Submitting...';
+        submitBtn.disabled = true;
+
+        // Get form data
+        userData = {
+          firstName: document.getElementById('firstName').value,
+          lastName: document.getElementById('lastName').value,
+          dob: document.getElementById('dob').value,
+          phoneNumber: document.getElementById('phoneNumber').value,
+          email: document.getElementById('email').value,
+          street: document.getElementById('street').value,
+          city: document.getElementById('city').value,
+          postcode: document.getElementById('postcode').value
+        };
+
+        // Send registration request
+        fetch(`${apiUrl}/users/register`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(userData)
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            // Store user ID
+            userId = data.data.userId;
+            userIdSpan.textContent = userId;
+
+            // Get verification token
+            return fetch(`${apiUrl}/verification/token/${userId}`)
+              .then(response => response.json())
+              .then(tokenData => {
+                if (tokenData.success) {
+                  // Store token
+                  accessToken = tokenData.token;
+
+                  // Show result
+                  form.style.display = 'none';
+                  result.style.display = 'block';
+
+                  // Reset button
+                  submitBtn.innerHTML = 'Register';
+                  submitBtn.disabled = false;
+
+                  return tokenData;
+                } else {
+                  throw new Error(tokenData.message || 'Failed to get access token');
+                }
+              });
+          } else {
+            throw new Error(data.message || 'Registration failed');
+          }
+        })
+        .catch(error => {
+          alert(error.message || 'An error occurred. Please try again.');
+
+          // Reset button
+          submitBtn.innerHTML = 'Register';
+          submitBtn.disabled = false;
+        });
+      });
+
+      // Verify button - Initialize Sumsub SDK
+      verifyBtn.addEventListener('click', function() {
+        if (!accessToken) {
+          alert('Access token not available. Please try again.');
+          return;
+        }
+
+        // Hide result, show verification
+        result.style.display = 'none';
+        verificationContainer.style.display = 'block';
+
+        // Initialize Sumsub SDK
+        initSumsubSDK();
+      });
+
+      // Status button - Check verification status
+      statusBtn.addEventListener('click', function() {
+        if (!userId) {
+          alert('User ID not available. Please try again.');
+          return;
+        }
+
+        // Show loading state
+        statusBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Checking...';
+        statusBtn.disabled = true;
+
+        // Get verification status
+        fetch(`${apiUrl}/verification/status/${userId}`)
+          .then(response => response.json())
+          .then(data => {
+            if (data.success) {
+              updateStatusDisplay(data.status);
+            } else {
+              throw new Error(data.message || 'Failed to get verification status');
+            }
+          })
+          .catch(error => {
+            alert(error.message || 'An error occurred. Please try again.');
+          })
+          .finally(() => {
+            // Reset button
+            statusBtn.innerHTML = 'Check Status';
+            statusBtn.disabled = false;
+          });
+      });
+
+      // Initialize Sumsub SDK
+      function initSumsubSDK() {
+        if (!window.snsWebSdk) {
+          alert('Sumsub SDK not available. Please try again later.');
+          return;
+        }
+
+        try {
+          // Initialize Sumsub WebSDK
+          snsWebSdkInstance = window.snsWebSdk
+            .init(
+              accessToken,
+              // Token update callback - this is called when the token is about to expire
+              () => {
+                console.log('Token refresh requested by Sumsub SDK');
+
+                // Get a fresh token from the server
+                return fetch(`${apiUrl}/verification/token/${userId}`)
+                  .then(response => {
+                    if (!response.ok) {
+                      throw new Error('Failed to refresh token');
+                    }
+                    return response.json();
+                  })
+                  .then(data => {
+                    if (data.success) {
+                      console.log('Token refreshed successfully');
+                      // Update the stored token
+                      accessToken = data.token;
+                      return data.token;
+                    } else {
+                      throw new Error(data.message || 'Failed to refresh token');
+                    }
+                  })
+                  .catch(error => {
+                    console.error('Error refreshing token:', error);
+                    // As a fallback, return the current token
+                    return accessToken;
+                  });
+              }
+            )
+            .withConf({
+              lang: 'en',
+              email: userData.email,
+              phone: userData.phoneNumber,
+              firstName: userData.firstName,
+              lastName: userData.lastName,
+              dob: userData.dob,
+              country: 'GBR', // Default to UK
+            })
+            .withOptions({ addViewportTag: false, adaptIframeHeight: true })
+            .on('idCheck.onStepCompleted', (payload) => {
+              console.log('Step completed:', payload);
+            })
+            .on('idCheck.onStatusChanged', (status) => {
+              console.log('Status changed:', status);
+              if (status === 'completed' || status === 'approved') {
+                showVerificationStatus('verified');
+              } else if (status === 'rejected') {
+                showVerificationStatus('rejected');
+              }
+            })
+            .on('idCheck.onError', (error) => {
+              console.error('Verification error:', error);
+
+              // Check if it's a session expiration error
+              if (error.message && (
+                  error.message.includes('expired') ||
+                  error.message.includes('session') ||
+                  error.message.includes('token')
+              )) {
+                // Handle session expiration
+                handleSessionExpiration();
+              } else {
+                // Handle other errors
+                alert(`Verification error: ${error.message || 'Unknown error'}`);
+              }
+            })
+            .build();
+
+          // Launch the WebSDK
+          snsWebSdkInstance.launch('#sumsub-websdk-container');
+        } catch (err) {
+          console.error('Error initializing Sumsub SDK:', err);
+          alert(`Error initializing verification: ${err.message}`);
+        }
+      }
+
+      // Show verification status
+      function showVerificationStatus(status) {
+        // Hide verification container
+        verificationContainer.style.display = 'none';
+
+        // Update status display
+        updateStatusDisplay(status);
+
+        // Show status container
+        statusContainer.style.display = 'block';
+      }
+
+      // Update status display
+      function updateStatusDisplay(status) {
+        if (status === 'verified') {
+          statusIcon.textContent = '✅';
+          statusIcon.style.color = '#1cc88a';
+          statusTitle.textContent = 'Verification Successful';
+          statusMessage.textContent = 'Your identity has been successfully verified. You can now proceed with using our services.';
+          statusBtn.textContent = 'Continue to Dashboard';
+          statusBtn.className = 'btn btn-success';
+        } else if (status === 'rejected') {
+          statusIcon.textContent = '❌';
+          statusIcon.style.color = '#e74a3b';
+          statusTitle.textContent = 'Verification Failed';
+          statusMessage.textContent = 'Unfortunately, we couldn\'t verify your identity. This could be due to document quality issues or information mismatch. Please try again with clearer documents.';
+          statusBtn.textContent = 'Try Again';
+          statusBtn.className = 'btn btn-danger';
+        } else {
+          statusIcon.textContent = '⏳';
+          statusIcon.style.color = '#f6c23e';
+          statusTitle.textContent = 'Verification Pending';
+          statusMessage.textContent = 'Your documents are under review. We\'ll notify you once the verification process is complete. This usually takes 24-48 hours.';
+          statusBtn.textContent = 'Check Status';
+          statusBtn.className = 'btn btn-primary';
+        }
+      }
+
+      // Handle session expiration
+      function handleSessionExpiration() {
+        // Hide verification container
+        verificationContainer.style.display = 'none';
+
+        // Create session expiration container
+        const sessionExpiredContainer = document.createElement('div');
+        sessionExpiredContainer.className = 'mt-4 text-center';
+        sessionExpiredContainer.innerHTML = `
+          <div style="font-size: 4rem; color: #e74a3b; margin-bottom: 1rem;">⚠️</div>
+          <h3 class="mb-3">Your Session Has Expired</h3>
+          <p class="mb-4">Your verification session has expired. Please refresh the page to start a new session.</p>
+          <div class="d-grid">
+            <button class="btn btn-primary" onclick="location.reload()">Refresh Page</button>
+          </div>
+          <p class="mt-3 text-muted small">If the problem persists, please contact our support team.</p>
+        `;
+
+        // Add to document
+        document.querySelector('.card-body').appendChild(sessionExpiredContainer);
+
+        // Refresh token
+        refreshToken();
+      }
+
+      // Refresh token
+      function refreshToken() {
+        if (!userId) {
+          console.error('Cannot refresh token: User ID not available');
+          return Promise.reject(new Error('User ID not available'));
+        }
+
+        return fetch(`${apiUrl}/verification/token/${userId}`)
+          .then(response => {
+            if (!response.ok) {
+              throw new Error('Failed to refresh token');
+            }
+            return response.json();
+          })
+          .then(data => {
+            if (data.success) {
+              console.log('Token refreshed successfully');
+              accessToken = data.token;
+              return data.token;
+            } else {
+              throw new Error(data.message || 'Failed to refresh token');
+            }
+          })
+          .catch(error => {
+            console.error('Error refreshing token:', error);
+            return null;
+          });
+      }
+    });
+  </script>
+</body>
+</html>

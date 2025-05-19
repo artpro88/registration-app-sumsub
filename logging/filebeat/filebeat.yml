@@ -1,0 +1,68 @@
+filebeat.inputs:
+- type: log
+  enabled: true
+  paths:
+    - /logs/app/*.log
+  json.keys_under_root: true
+  json.add_error_key: true
+  json.message_key: message
+  tags: ["app"]
+
+- type: log
+  enabled: true
+  paths:
+    - /logs/nginx/access.log
+  tags: ["nginx", "access"]
+
+- type: log
+  enabled: true
+  paths:
+    - /logs/nginx/error.log
+  tags: ["nginx", "error"]
+
+- type: container
+  enabled: true
+  paths:
+    - /var/lib/docker/containers/*/*.log
+  json.keys_under_root: true
+  json.add_error_key: true
+  json.message_key: log
+  tags: ["docker"]
+
+filebeat.config.modules:
+  path: ${path.config}/modules.d/*.yml
+  reload.enabled: false
+
+processors:
+- add_host_metadata: ~
+- add_cloud_metadata: ~
+- add_docker_metadata: ~
+- add_kubernetes_metadata: ~
+
+output.elasticsearch:
+  hosts: ["elasticsearch:9200"]
+  indices:
+    - index: "filebeat-app-%{+yyyy.MM.dd}"
+      when.contains:
+        tags: "app"
+    - index: "filebeat-nginx-access-%{+yyyy.MM.dd}"
+      when.contains:
+        tags: "access"
+    - index: "filebeat-nginx-error-%{+yyyy.MM.dd}"
+      when.contains:
+        tags: "error"
+    - index: "filebeat-docker-%{+yyyy.MM.dd}"
+      when.contains:
+        tags: "docker"
+
+output.logstash:
+  enabled: true
+  hosts: ["logstash:5044"]
+
+logging.level: info
+logging.to_files: true
+logging.files:
+  path: /var/log/filebeat
+  name: filebeat
+  keepfiles: 7
+  permissions: 0644

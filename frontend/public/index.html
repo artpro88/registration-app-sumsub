@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registration with Identity Verification</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css">
+  <!-- Custom styles -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container py-5">
+    <div class="row justify-content-center">
+      <div class="col-12 col-lg-10">
+        <div class="card">
+          <div class="card-header">
+            <h2 class="text-center mb-0">User Registration & Verification</h2>
+          </div>
+          <div class="card-body">
+            <!-- Step indicator -->
+            <div class="step-indicator">
+              <div class="step active">
+                <div class="step-number">1</div>
+                <div class="step-title">Registration</div>
+              </div>
+              <div class="step">
+                <div class="step-number">2</div>
+                <div class="step-title">Identity Verification</div>
+              </div>
+              <div class="step">
+                <div class="step-number">3</div>
+                <div class="step-title">Verification Status</div>
+              </div>
+            </div>
+
+            <!-- Registration Form -->
+            <form id="registration-form">
+              <div class="row mb-4">
+                <div class="col-12">
+                  <h3 class="mb-4">Personal Information</h3>
+                </div>
+
+                <!-- First Name -->
+                <div class="col-md-6 mb-3">
+                  <label for="firstName" class="form-label">First Name</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="firstName"
+                    name="firstName"
+                    required
+                  />
+                  <div class="invalid-feedback">First name is required</div>
+                </div>
+
+                <!-- Last Name -->
+                <div class="col-md-6 mb-3">
+                  <label for="lastName" class="form-label">Last Name</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="lastName"
+                    name="lastName"
+                    required
+                  />
+                  <div class="invalid-feedback">Last name is required</div>
+                </div>
+
+                <!-- Date of Birth -->
+                <div class="col-md-6 mb-3">
+                  <label for="dob" class="form-label">Date of Birth</label>
+                  <input
+                    type="date"
+                    class="form-control"
+                    id="dob"
+                    name="dob"
+                    required
+                  />
+                  <div class="invalid-feedback">You must be at least 18 years old</div>
+                  <small class="form-text text-muted">You must be at least 18 years old</small>
+                </div>
+
+                <!-- Phone Number -->
+                <div class="col-md-6 mb-3">
+                  <label for="phoneNumber" class="form-label">Phone Number</label>
+                  <input
+                    type="tel"
+                    class="form-control"
+                    id="phoneNumber"
+                    name="phoneNumber"
+                    placeholder="+44..."
+                    required
+                  />
+                  <div class="invalid-feedback">Please enter a valid phone number</div>
+                  <small class="form-text text-muted">Preferably in international format (e.g., +44...)</small>
+                </div>
+
+                <!-- Email -->
+                <div class="col-12 mb-3">
+                  <label for="email" class="form-label">Email Address</label>
+                  <input
+                    type="email"
+                    class="form-control"
+                    id="email"
+                    name="email"
+                    required
+                  />
+                  <div class="invalid-feedback">Please enter a valid email address</div>
+                </div>
+              </div>
+
+              <!-- Address Fields -->
+              <div class="row mb-4">
+                <div class="col-12">
+                  <h3 class="mb-4">Address Information</h3>
+                </div>
+
+                <!-- Street -->
+                <div class="col-12 mb-3">
+                  <label for="street" class="form-label">Street Address</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="street"
+                    name="street"
+                    required
+                  />
+                  <div class="invalid-feedback">Street address is required</div>
+                </div>
+
+                <!-- City -->
+                <div class="col-md-6 mb-3">
+                  <label for="city" class="form-label">City</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="city"
+                    name="city"
+                    required
+                  />
+                  <div class="invalid-feedback">City is required</div>
+                </div>
+
+                <!-- Postcode -->
+                <div class="col-md-6 mb-3">
+                  <label for="postcode" class="form-label">Postcode</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="postcode"
+                    name="postcode"
+                    required
+                  />
+                  <div class="invalid-feedback">Postcode is required</div>
+                </div>
+              </div>
+
+              <!-- GDPR Consent -->
+              <div class="mb-4">
+                <div class="form-check">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    id="gdprConsent"
+                    required
+                  />
+                  <label class="form-check-label" for="gdprConsent">
+                    I consent to the processing of my personal data in accordance with GDPR
+                  </label>
+                  <div class="invalid-feedback">You must accept the terms to continue</div>
+                </div>
+              </div>
+
+              <!-- Submit Button -->
+              <div class="d-grid">
+                <button
+                  type="submit"
+                  class="btn btn-primary"
+                  id="submit-btn"
+                >
+                  Continue to Verification
+                </button>
+              </div>
+            </form>
+
+            <!-- Verification Container (initially hidden) -->
+            <div id="verification-container" style="display: none;">
+              <div class="alert alert-info mb-4" role="alert">
+                <h4 class="alert-heading">Identity Verification</h4>
+                <p>Please complete the identity verification process below. You'll need to:</p>
+                <ul>
+                  <li>Upload a valid government-issued ID document</li>
+                  <li>Take a selfie or complete a liveness check</li>
+                  <li>Follow any additional instructions provided</li>
+                </ul>
+                <p class="mb-0">This process helps us verify your identity and comply with regulations.</p>
+              </div>
+
+              <div id="sumsub-websdk-container"></div>
+
+              <div class="text-center mt-4">
+                <p class="text-muted small">
+                  Your data is securely processed in accordance with our privacy policy and applicable regulations.
+                </p>
+              </div>
+            </div>
+
+            <!-- Status Container (initially hidden) -->
+            <div id="status-container" style="display: none;" class="status-container">
+              <div class="status-icon status-verified">
+                ✅
+              </div>
+
+              <h3 class="mb-3">Verification Successful</h3>
+
+              <p class="mb-4">Your identity has been successfully verified. You can now proceed with using our services.</p>
+
+              <button class="btn btn-success px-4 py-2">
+                Continue to Dashboard
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap JS Bundle with Popper -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Sumsub WebSDK -->
+  <script src="https://static.sumsub.com/idensic/static/sns-websdk-builder.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // API URL - use port 8080 for our simple server
+      const apiUrl = 'http://localhost:8080/api';
+      const form = document.getElementById('registration-form');
+      const submitBtn = document.getElementById('submit-btn');
+      const verificationContainer = document.getElementById('verification-container');
+      const statusContainer = document.getElementById('status-container');
+      const stepIndicator = document.querySelector('.step-indicator');
+      let snsWebSdkInstance = null;
+      let userId = null;
+
+      // Form submission
+      form.addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        // Validate form
+        if (!validateForm()) {
+          return;
+        }
+
+        // Show loading state
+        submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Submitting...';
+        submitBtn.disabled = true;
+
+        // Get form data
+        const formData = {
+          firstName: document.getElementById('firstName').value,
+          lastName: document.getElementById('lastName').value,
+          dob: document.getElementById('dob').value,
+          phoneNumber: document.getElementById('phoneNumber').value,
+          email: document.getElementById('email').value,
+          street: document.getElementById('street').value,
+          city: document.getElementById('city').value,
+          postcode: document.getElementById('postcode').value
+        };
+
+        // Create XMLHttpRequest (old-school approach)
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', `${apiUrl}/users/register`, true);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+
+        xhr.onload = function() {
+          if (xhr.status >= 200 && xhr.status < 300) {
+            // Success
+            const data = JSON.parse(xhr.responseText);
+
+            // Store user ID
+            userId = data.data.userId;
+
+            // Get access token using another XMLHttpRequest
+            const tokenXhr = new XMLHttpRequest();
+            tokenXhr.open('GET', `${apiUrl}/verification/token/${userId}`, true);
+
+            tokenXhr.onload = function() {
+              if (tokenXhr.status >= 200 && tokenXhr.status < 300) {
+                const tokenData = JSON.parse(tokenXhr.responseText);
+
+                // Hide form, show verification
+                form.style.display = 'none';
+                verificationContainer.style.display = 'block';
+
+                // Update step indicator
+                stepIndicator.children[0].classList.add('completed');
+                stepIndicator.children[1].classList.add('active');
+
+                // Initialize Sumsub SDK
+                initSumsubSDK(formData, tokenData.token);
+              } else {
+                // Token error
+                alert('Failed to get access token. Please try again.');
+                submitBtn.innerHTML = 'Continue to Verification';
+                submitBtn.disabled = false;
+              }
+            };
+
+            tokenXhr.onerror = function() {
+              alert('Network error. Please try again.');
+              submitBtn.innerHTML = 'Continue to Verification';
+              submitBtn.disabled = false;
+            };
+
+            tokenXhr.send();
+          } else {
+            // Error
+            try {
+              const errorData = JSON.parse(xhr.responseText);
+              alert(errorData.message || 'Registration failed');
+            } catch (e) {
+              alert('Registration failed. Please try again.');
+            }
+
+            submitBtn.innerHTML = 'Continue to Verification';
+            submitBtn.disabled = false;
+          }
+        };
+
+        xhr.onerror = function() {
+          alert('Network error. Please try again.');
+          submitBtn.innerHTML = 'Continue to Verification';
+          submitBtn.disabled = false;
+        };
+
+        xhr.send(JSON.stringify(formData));
+      });
+
+      // Initialize Sumsub SDK
+      function initSumsubSDK(userData, accessToken) {
+        if (!window.snsWebSdk) {
+          console.error('Sumsub SDK not available');
+          showErrorMessage('Verification service is not available. Please try again later.');
+          return;
+        }
+
+        try {
+          // Initialize Sumsub WebSDK
+          snsWebSdkInstance = window.snsWebSdk
+            .init(
+              accessToken,
+              // Token update callback
+              () => {
+                // For demo purposes, just return the same token
+                return new Promise((resolve) => {
+                  setTimeout(() => {
+                    resolve(accessToken);
+                  }, 100);
+                });
+              }
+            )
+            .withConf({
+              lang: 'en',
+              email: userData.email,
+              phone: userData.phoneNumber,
+              firstName: userData.firstName,
+              lastName: userData.lastName,
+              dob: userData.dob,
+              country: 'GBR', // Default to UK
+            })
+            .withOptions({ addViewportTag: false, adaptIframeHeight: true })
+            .on('idCheck.onStepCompleted', (payload) => {
+              console.log('Step completed:', payload);
+            })
+            .on('idCheck.onStatusChanged', (status) => {
+              console.log('Status changed:', status);
+              if (status === 'completed' || status === 'approved') {
+                showVerificationStatus('verified');
+              } else if (status === 'rejected') {
+                showVerificationStatus('rejected');
+              }
+            })
+            .on('idCheck.onError', (error) => {
+              console.error('Verification error:', error);
+              showErrorMessage(`Verification error: ${error.message || 'Unknown error'}`);
+            })
+            .build();
+
+          // Launch the WebSDK
+          snsWebSdkInstance.launch('#sumsub-websdk-container');
+        } catch (err) {
+          console.error('Error initializing Sumsub SDK:', err);
+          showErrorMessage(`Error initializing verification: ${err.message}`);
+        }
+      }
+
+      // Show verification status
+      function showVerificationStatus(status) {
+        // Hide verification container
+        verificationContainer.style.display = 'none';
+
+        // Update status container based on status
+        const statusIcon = statusContainer.querySelector('.status-icon');
+        const statusTitle = statusContainer.querySelector('h3');
+        const statusMessage = statusContainer.querySelector('p');
+        const statusButton = statusContainer.querySelector('button');
+
+        if (status === 'verified') {
+          statusIcon.textContent = '✅';
+          statusIcon.className = 'status-icon status-verified';
+          statusTitle.textContent = 'Verification Successful';
+          statusMessage.textContent = 'Your identity has been successfully verified. You can now proceed with using our services.';
+          statusButton.textContent = 'Continue to Dashboard';
+          statusButton.className = 'btn btn-success px-4 py-2';
+        } else if (status === 'rejected') {
+          statusIcon.textContent = '❌';
+          statusIcon.className = 'status-icon status-rejected';
+          statusTitle.textContent = 'Verification Failed';
+          statusMessage.textContent = 'Unfortunately, we couldn\'t verify your identity. This could be due to document quality issues or information mismatch. Please try again with clearer documents.';
+          statusButton.textContent = 'Try Again';
+          statusButton.className = 'btn btn-danger px-4 py-2';
+
+          // Add rejection reasons
+          const rejectionDiv = document.createElement('div');
+          rejectionDiv.className = 'alert alert-warning mb-4';
+          rejectionDiv.innerHTML = `
+            <h5>Common reasons for rejection:</h5>
+            <ul class="mb-0 text-start">
+              <li>Document is blurry or has poor image quality</li>
+              <li>Document is expired or damaged</li>
+              <li>Information doesn't match registration details</li>
+              <li>Face in selfie doesn't match ID document</li>
+              <li>Liveness check failed</li>
+            </ul>
+          `;
+          statusMessage.after(rejectionDiv);
+        } else {
+          statusIcon.textContent = '⏳';
+          statusIcon.className = 'status-icon status-pending';
+          statusTitle.textContent = 'Verification Pending';
+          statusMessage.textContent = 'Your documents are under review. We\'ll notify you once the verification process is complete. This usually takes 24-48 hours.';
+          statusButton.textContent = 'Check Status Later';
+          statusButton.className = 'btn btn-warning px-4 py-2';
+        }
+
+        // Show status container
+        statusContainer.style.display = 'block';
+
+        // Update step indicator
+        stepIndicator.children[1].classList.add('completed');
+        stepIndicator.children[2].classList.add('active');
+      }
+
+      // Show error message
+      function showErrorMessage(message) {
+        const errorDiv = document.createElement('div');
+        errorDiv.className = 'alert alert-danger';
+        errorDiv.innerHTML = `
+          <h4 class="alert-heading">Verification Error</h4>
+          <p>${message}</p>
+          <hr>
+          <p class="mb-0">Please try again later or contact support.</p>
+        `;
+
+        verificationContainer.innerHTML = '';
+        verificationContainer.appendChild(errorDiv);
+
+        // Add retry button
+        const retryButton = document.createElement('button');
+        retryButton.className = 'btn btn-primary mt-3';
+        retryButton.textContent = 'Try Again';
+        retryButton.addEventListener('click', () => {
+          location.reload();
+        });
+        verificationContainer.appendChild(retryButton);
+      }
+
+      // Form validation
+      function validateForm() {
+        let isValid = true;
+
+        // First Name validation
+        const firstName = document.getElementById('firstName');
+        if (!firstName.value.trim()) {
+          firstName.classList.add('is-invalid');
+          isValid = false;
+        } else {
+          firstName.classList.remove('is-invalid');
+        }
+
+        // Last Name validation
+        const lastName = document.getElementById('lastName');
+        if (!lastName.value.trim()) {
+          lastName.classList.add('is-invalid');
+          isValid = false;
+        } else {
+          lastName.classList.remove('is-invalid');
+        }
+
+        // Date of Birth validation
+        const dob = document.getElementById('dob');
+        if (!dob.value) {
+          dob.classList.add('is-invalid');
+          isValid = false;
+        } else {
+          // Check if user is at least 18 years old
+          const dobDate = new Date(dob.value);
+          const today = new Date();
+          const eighteenYearsAgo = new Date(
+            today.getFullYear() - 18,
+            today.getMonth(),
+            today.getDate()
+          );
+
+          if (dobDate > eighteenYearsAgo) {
+            dob.classList.add('is-invalid');
+            isValid = false;
+          } else {
+            dob.classList.remove('is-invalid');
+          }
+        }
+
+        // Phone Number validation
+        const phoneNumber = document.getElementById('phoneNumber');
+        if (!phoneNumber.value.trim()) {
+          phoneNumber.classList.add('is-invalid');
+          isValid = false;
+        } else if (!/^\+?[0-9\s\-()]{8,20}$/.test(phoneNumber.value)) {
+          phoneNumber.classList.add('is-invalid');
+          isValid = false;
+        } else {
+          phoneNumber.classList.remove('is-invalid');
+        }
+
+        // Email validation
+        const email = document.getElementById('email');
+        if (!email.value.trim()) {
+          email.classList.add('is-invalid');
+          isValid = false;
+        } else if (!/\S+@\S+\.\S+/.test(email.value)) {
+          email.classList.add('is-invalid');
+          isValid = false;
+        } else {
+          email.classList.remove('is-invalid');
+        }
+
+        // Street validation
+        const street = document.getElementById('street');
+        if (!street.value.trim()) {
+          street.classList.add('is-invalid');
+          isValid = false;
+        } else {
+          street.classList.remove('is-invalid');
+        }
+
+        // City validation
+        const city = document.getElementById('city');
+        if (!city.value.trim()) {
+          city.classList.add('is-invalid');
+          isValid = false;
+        } else {
+          city.classList.remove('is-invalid');
+        }
+
+        // Postcode validation
+        const postcode = document.getElementById('postcode');
+        if (!postcode.value.trim()) {
+          postcode.classList.add('is-invalid');
+          isValid = false;
+        } else {
+          postcode.classList.remove('is-invalid');
+        }
+
+        // GDPR consent validation
+        const gdprConsent = document.getElementById('gdprConsent');
+        if (!gdprConsent.checked) {
+          gdprConsent.classList.add('is-invalid');
+          isValid = false;
+        } else {
+          gdprConsent.classList.remove('is-invalid');
+        }
+
+        return isValid;
+      }
+    });
+  </script>
+</body>
+</html>

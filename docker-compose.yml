@@ -1,0 +1,32 @@
+version: '3'
+
+services:
+  web:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./data:/app/data
+      - ./logs:/app/logs
+    environment:
+      - PORT=8000
+      - HOST=0.0.0.0
+      - USE_HTTPS=false
+      - SECRET_KEY=your-production-secret-key
+      - ADMIN_KEY=your-admin-key
+      - SUMSUB_APP_TOKEN=sbx:KLRZP8PRbxeNmlgfpMzyiDRY.Qqjq7MWF2nJAzjxvUR9zEK6BZkE04MqX
+      - SUMSUB_SECRET_KEY=0YIkTYFr1Xex1402bqIn9Gw6658s0sq9
+    restart: unless-stopped
+
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./nginx/ssl:/etc/nginx/ssl
+      - ./frontend/public:/usr/share/nginx/html
+    depends_on:
+      - web
+    restart: unless-stopped

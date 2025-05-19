@@ -1,0 +1,12 @@
+{
+  "name": "registration-app-backend",
+  "version": "1.0.0",
+  "description": "Backend for registration app with Sumsub identity verification",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}
