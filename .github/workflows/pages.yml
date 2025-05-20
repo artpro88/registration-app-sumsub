@@ -28,10 +28,10 @@ jobs:
         uses: actions/configure-pages@v3
       
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v2  # Updated from v1 to v2
+        uses: actions/upload-pages-artifact@v1.0.8  # Specific version
         with:
           path: './frontend/public'
       
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v2
+        uses: actions/deploy-pages@v1.0.9  # Specific version
